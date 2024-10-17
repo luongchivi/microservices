@@ -26,10 +26,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfig {
     final String[] PUBLIC_POST_ENDPOINTS = {
-        "/users", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh-token", "/posts"
+        "/users", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh-token",
     };
 
-    final String[] PUBLIC_GET_ENDPOINTS = {"/tags", "/categories"};
+    final String[] PUBLIC_GET_ENDPOINTS = {};
 
     final String[] SWAGGER_WHITELIST = {
         "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**"
@@ -52,17 +52,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users")
                 .hasAnyAuthority("ROLE_Admin", "read")
                 .requestMatchers(HttpMethod.DELETE, "/users")
-                .hasAuthority("ROLE_Admin")
-                // POST vào /tags chỉ dành cho ROLE_Admin
-                .requestMatchers(HttpMethod.POST, "/tags")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các phương thức đến /roles yêu cầu ROLE_Admin
-                .requestMatchers(HttpMethod.DELETE, "/tags/")
-                .hasAuthority("ROLE_Admin")
-                .requestMatchers(HttpMethod.POST, "/categories")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các phương thức đến /roles yêu cầu ROLE_Admin
-                .requestMatchers(HttpMethod.DELETE, "/categories/")
                 .hasAuthority("ROLE_Admin")
                 .requestMatchers("*", "/roles")
                 .hasAuthority("ROLE_Admin")

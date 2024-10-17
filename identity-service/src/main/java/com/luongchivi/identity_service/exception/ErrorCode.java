@@ -24,10 +24,6 @@ public enum ErrorCode {
     PAGE_INVALID(1014, "page must be greater than one", HttpStatus.BAD_REQUEST),
     PAGE_SIZE_INVALID(1015, "pageSize must be greater than one", HttpStatus.BAD_REQUEST),
     BAD_REQUEST(1016, "Bad request", HttpStatus.BAD_REQUEST),
-    TAG_NOT_FOUND(1017, "Tag not found", HttpStatus.NOT_FOUND),
-    TAG_NAME_REQUIRED(1018, "Field [name] is required", HttpStatus.BAD_REQUEST),
-    CATEGORY_NAME_REQUIRED(1019, "Field [name] is required", HttpStatus.BAD_REQUEST),
-    CATEGORY_NOT_FOUND(1020, "Category not found", HttpStatus.NOT_FOUND),
     ;
 
     private int code;

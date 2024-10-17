@@ -1,0 +1,32 @@
+server:
+  port: 8888
+
+app:
+  api-prefix: /api/v1
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: identity_service
+          uri: http://localhost:8080
+          predicates:
+            - Path=${app.api-prefix}/identity/**
+          filters:
+            - StripPrefix=2
+        - id: user_profile_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=${app.api-prefix}/profile/external/users/**
+          filters:
+            - StripPrefix=2
+
+logging:
+  level:
+    root: DEBUG  # Thiết lập mức log mặc định cho toàn ứng dụng là DEBUG
+#    org.springframework: DEBUG  # Log chi tiết cho các lớp của Spring framework
+#    com.luongchivi: DEBUG  # Log chi tiết cho package của bạn
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n%wEx"  # Định dạng log và in chi tiết stack trace khi có lỗi
