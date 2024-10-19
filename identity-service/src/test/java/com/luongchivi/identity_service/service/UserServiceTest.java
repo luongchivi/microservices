@@ -58,9 +58,6 @@ public class UserServiceTest {
         user = User.builder()
                 .id("e570ddff-76fc-4fb0-adf0-8979a57d3d76")
                 .username("luongchivi060399")
-                .firstName("Vi")
-                .lastName("Luong Chi")
-                .dateOfBirth(dateOfBirth)
                 .build();
 
         role = Role.builder().name("User").description("User role description").build();

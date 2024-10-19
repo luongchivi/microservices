@@ -1,6 +1,5 @@
 package com.luongchivi.identity_service.dto.response.user;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 

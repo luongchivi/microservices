@@ -109,17 +109,11 @@ class UserControllerTest {
         userResponse = UserResponse.builder()
                 .id("e570ddff-76fc-4fb0-adf0-8979a57d3d76")
                 .username("luongchivi060399")
-                .firstName("Vi")
-                .lastName("Luong Chi")
-                .dateOfBirth(dateOfBirth)
                 .roles(Set.of(roleResponse))
                 .build();
 
         user = User.builder()
                 .username("luongchivi060399")
-                .firstName("Vi")
-                .lastName("Luong Chi")
-                .dateOfBirth(dateOfBirth)
                 .roles(Set.of(role))
                 .build();
 
@@ -236,15 +230,7 @@ class UserControllerTest {
 
         LocalDate dateOfBirth = LocalDate.now();
 
-        UserUpdateRequest updateRequest = UserUpdateRequest.builder()
-                .firstName("Bar")
-                .lastName("Foo")
-                .dateOfBirth(dateOfBirth)
-                .build();
-
-        userResponse.setFirstName("Bar");
-        userResponse.setLastName("Foo");
-        userResponse.setDateOfBirth(dateOfBirth);
+        UserUpdateRequest updateRequest = UserUpdateRequest.builder().build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

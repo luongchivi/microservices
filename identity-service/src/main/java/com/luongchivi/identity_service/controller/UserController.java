@@ -34,7 +34,7 @@ public class UserController {
             responses = {
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Success", responseCode = "200")
             })
-    @PostMapping()
+    @PostMapping("/register")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         UserResponse user = userService.createUser(request);
         return ApiResponse.<UserResponse>builder().results(user).build();

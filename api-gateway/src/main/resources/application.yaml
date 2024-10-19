@@ -23,9 +23,9 @@ spring:
           filters:
             - StripPrefix=2
 
-logging:
-  level:
-    root: DEBUG  # Thiết lập mức log mặc định cho toàn ứng dụng là DEBUG
+#logging:
+#  level:
+#    root: DEBUG  # Thiết lập mức log mặc định cho toàn ứng dụng là DEBUG
 #    org.springframework: DEBUG  # Log chi tiết cho các lớp của Spring framework
 #    com.luongchivi: DEBUG  # Log chi tiết cho package của bạn
 #  pattern:

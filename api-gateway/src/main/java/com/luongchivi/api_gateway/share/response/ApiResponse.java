@@ -1,7 +1,6 @@
-package com.luongchivi.identity_service.share.response;
+package com.luongchivi.api_gateway.share.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ToString
 @Builder
 public class ApiResponse<T> {
     @Builder.Default

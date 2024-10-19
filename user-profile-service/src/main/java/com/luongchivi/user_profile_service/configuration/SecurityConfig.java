@@ -1,5 +1,8 @@
-package com.luongchivi.identity_service.configuration;
+package com.luongchivi.user_profile_service.configuration;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,10 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -26,13 +25,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfig {
     final String[] PUBLIC_POST_ENDPOINTS = {
-        "/users/register", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh-token",
-    };
-
-    final String[] PUBLIC_GET_ENDPOINTS = {};
-
-    final String[] SWAGGER_WHITELIST = {
-        "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**"
     };
 
     CustomJwtDecoder customJwtDecoder;
@@ -40,25 +32,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                // Cho phép truy cập không cần xác thực vào các đường dẫn trong SWAGGER_WHITELIST
-                .requestMatchers(SWAGGER_WHITELIST)
-                .permitAll()
-                // Cho phép POST vào các PUBLIC_ENDPOINTS mà không cần xác thực
                 .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
-                .permitAll()
-                // GET /users yêu cầu ROLE_Admin hoặc quyền "read"
-                .requestMatchers(HttpMethod.GET, "/users")
-                .hasAnyAuthority("ROLE_Admin", "read")
-                .requestMatchers(HttpMethod.DELETE, "/users")
-                .hasAuthority("ROLE_Admin")
-                .requestMatchers("*", "/roles")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các phương thức đến /permissions yêu cầu ROLE_Admin
-                .requestMatchers("*", "/permissions")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các request khác đều yêu cầu ROLE_Admin
                 .anyRequest()
                 .authenticated());
 
@@ -85,11 +60,6 @@ public class SecurityConfig {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 
         return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 
     @Bean
