@@ -1,20 +1,17 @@
-package com.luongchivi.identity_service.configuration;
+package com.luongchivi.notification_service.configuration;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -23,13 +20,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfig {
     final String[] PUBLIC_POST_ENDPOINTS = {
-        "/users/register", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh-token",
-    };
-
-    final String[] PUBLIC_GET_ENDPOINTS = {};
-
-    final String[] SWAGGER_WHITELIST = {
-        "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**"
+            "/email/send"
     };
 
     CustomJwtDecoder customJwtDecoder;
@@ -37,25 +28,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                // Cho phép truy cập không cần xác thực vào các đường dẫn trong SWAGGER_WHITELIST
-                .requestMatchers(SWAGGER_WHITELIST)
-                .permitAll()
-                // Cho phép POST vào các PUBLIC_ENDPOINTS mà không cần xác thực
                 .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS)
-                .permitAll()
-                // GET /users yêu cầu ROLE_Admin hoặc quyền "read"
-                .requestMatchers(HttpMethod.GET, "/users")
-                .hasAnyAuthority("ROLE_Admin", "read")
-                .requestMatchers(HttpMethod.DELETE, "/users")
-                .hasAuthority("ROLE_Admin")
-                .requestMatchers("*", "/roles")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các phương thức đến /permissions yêu cầu ROLE_Admin
-                .requestMatchers("*", "/permissions")
-                .hasAuthority("ROLE_Admin")
-                // Tất cả các request khác đều yêu cầu ROLE_Admin
                 .anyRequest()
                 .authenticated());
 
@@ -68,11 +42,6 @@ public class SecurityConfig {
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 
     @Bean
