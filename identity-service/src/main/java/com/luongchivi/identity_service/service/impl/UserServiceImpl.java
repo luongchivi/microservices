@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     UserProfileClient userProfileClient;
     UserProfileMapper userProfileMapper;
+    KafkaTemplate<String, String> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest request) {
         // Map request to user entity
@@ -62,16 +64,21 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(userRole));
 
         try {
+            // Save new user in identity-service
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
             throw new AppException(ErrorCode.USER_ALREADY_EXISTED);
         }
 
+        // Save new userProfile
         UserProfileCreationRequest userProfileCreationRequest = userProfileMapper.toUserProfileCreationRequest(request);
         userProfileCreationRequest.setUserId(user.getId());
         Object userProfile = userProfileClient.createUserProfile(userProfileCreationRequest);
-        log.info("Log Response UserProfile: {}",userProfile);
-        // Save the user and return the response
+        log.info("Log Response UserProfile: {}", userProfile);
+
+        // Publish message to topic kafka
+        kafkaTemplate.send("onboard-new-user-successful", "Welcome our new member: " + user.getUsername());
+
         return userMapper.toUserResponse(user);
     }
 
