@@ -3,6 +3,7 @@ package com.luongchivi.identity_service.service.impl;
 import java.util.List;
 import java.util.Set;
 
+import com.luongchivi.identity_service.dto.event.NotificationEvent;
 import com.luongchivi.identity_service.dto.request.userProfile.UserProfileCreationRequest;
 import com.luongchivi.identity_service.mapper.UserProfileMapper;
 import com.luongchivi.identity_service.repository.httpclient.UserProfileClient;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     UserProfileClient userProfileClient;
     UserProfileMapper userProfileMapper;
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest request) {
         // Map request to user entity
@@ -76,8 +77,15 @@ public class UserServiceImpl implements UserService {
         Object userProfile = userProfileClient.createUserProfile(userProfileCreationRequest);
         log.info("Log Response UserProfile: {}", userProfile);
 
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(request.getEmail())
+                .subject("Welcome to FoorShop")
+                .body("Hello, " + request.getUsername())
+                .build();
+
         // Publish message to topic kafka
-        kafkaTemplate.send("onboard-new-user-successful", "Welcome our new member: " + user.getUsername());
+        kafkaTemplate.send("notification-delivery", notificationEvent);
 
         return userMapper.toUserResponse(user);
     }

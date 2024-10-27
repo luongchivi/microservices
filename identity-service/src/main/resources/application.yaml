@@ -24,7 +24,7 @@ spring:
     bootstrap-servers: localhost:9094
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 jwt:
   signerKey: ${SIGNER_KET_DEV:XbMzESgyD0cAdQVJ4QpQ/Jrc4fo3gyzAyd0AnbvNKT8noPFU+A2CWKEGRXMxI8ig}

@@ -75,6 +75,7 @@ public class ApplicationInitConfig {
             // Create default admin user if not present
             if (userRepository.findByUsername("Admin").isEmpty()) {
                 User adminUser = User.builder()
+                        .email("chivi060399@gmail.com")
                         .username("Admin")
                         .password(passwordEncoder.encode("Admin"))
                         .roles(Set.of(adminRole, userRole)) // Assign the admin role

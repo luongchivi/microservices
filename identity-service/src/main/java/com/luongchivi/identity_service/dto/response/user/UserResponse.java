@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class UserResponse {
     String id;
     String username;
+    String email;
     Set<RoleResponse> roles;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

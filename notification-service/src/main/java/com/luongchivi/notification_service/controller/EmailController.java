@@ -1,6 +1,8 @@
 package com.luongchivi.notification_service.controller;
 
+import com.luongchivi.notification_service.dto.event.NotificationEvent;
 import com.luongchivi.notification_service.dto.request.EmailRequest;
+import com.luongchivi.notification_service.dto.request.Recipient;
 import com.luongchivi.notification_service.dto.response.EmailResponse;
 import com.luongchivi.notification_service.service.EmailService;
 import com.luongchivi.notification_service.share.response.ApiResponse;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/email")
 @RequiredArgsConstructor
@@ -26,10 +30,5 @@ public class EmailController {
     ApiResponse<EmailResponse> sendEmail(@RequestBody EmailRequest request) {
         EmailResponse emailResponse = emailService.sendEmail(request);
         return ApiResponse.<EmailResponse>builder().results(emailResponse).build();
-    }
-
-    @KafkaListener(topics = "onboard-new-user-successful")
-    public void listen(String message) {
-        log.info("Message received: {}", message);
     }
 }

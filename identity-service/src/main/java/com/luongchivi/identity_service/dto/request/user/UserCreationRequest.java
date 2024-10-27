@@ -24,6 +24,7 @@ public class UserCreationRequest {
 
     String firstName;
     String lastName;
+    String email;
 
     @DateOfBirthConstraint(min = 18, message = "INVALID_DATE_OF_BIRTH")
     LocalDate dateOfBirth;
