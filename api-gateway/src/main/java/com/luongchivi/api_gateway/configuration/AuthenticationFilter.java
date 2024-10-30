@@ -41,6 +41,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/auth/.*",
             "/identity/users/register",
             "/notification/email/.*",
+            "/post/.*",
     };
 
     @NonFinal
