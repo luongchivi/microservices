@@ -1,15 +1,18 @@
 package com.luongchivi.post_service.service.Impl;
 
 import com.luongchivi.post_service.dto.request.PostCreationRequest;
-import com.luongchivi.post_service.dto.response.PostResponse;
+import com.luongchivi.post_service.dto.response.post.PostResponse;
+import com.luongchivi.post_service.dto.response.userProfile.UserProfileResponse;
 import com.luongchivi.post_service.entity.Post;
 import com.luongchivi.post_service.mapper.PostMapper;
 import com.luongchivi.post_service.repository.PostRepository;
+import com.luongchivi.post_service.repository.httpclient.UserProfileClient;
 import com.luongchivi.post_service.service.PostService;
 import com.luongchivi.post_service.share.response.PageResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +27,26 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImpl implements PostService {
     PostRepository postRepository;
     PostMapper postMapper;
+    UserProfileClient userProfileClient;
 
     public PostResponse createPost(PostCreationRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        UserProfileResponse userProfileResponse = null;
+
+        try {
+            userProfileResponse = userProfileClient.getUserProfile(userId).getResults();
+        } catch (Exception e) {
+            log.error("Error while getting userProfile", e);
+        }
+
+        String username = userProfileResponse != null ?
+                userProfileResponse.getFirstName() + userProfileResponse.getLastName() : null;
 
         Post post = Post.builder()
                 .title(request.getTitle())
@@ -41,12 +57,22 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         post = postRepository.save(post);
-        return postMapper.toPostResponse(post);
+        PostResponse postResponse = postMapper.toPostResponse(post);
+        postResponse.setUsername(username);
+        return postResponse;
     }
 
     public PageResponse<PostResponse> getMyPosts(int page, int pageSize, String sortDirection, String sortBy) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
+
+        UserProfileResponse userProfileResponse = null;
+
+        try {
+            userProfileResponse = userProfileClient.getUserProfile(userId).getResults();
+        } catch (Exception e) {
+            log.error("Error while getting userProfile", e);
+        }
 
         if (!sortDirection.equalsIgnoreCase("ASC") && !sortDirection.equalsIgnoreCase("DESC")) {
             throw new IllegalArgumentException("Invalid sort direction. Must be 'ASC' or 'DESC'.");
@@ -62,8 +88,14 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
         Page<Post> postsPage = postRepository.findAllByUserId(userId, pageable);
 
+        String username = userProfileResponse != null ?
+                userProfileResponse.getFirstName() + userProfileResponse.getLastName() : null;
         List<PostResponse> postsResponse = postsPage.getContent().stream()
-                .map(post -> postMapper.toPostResponse(post))
+                .map(post -> {
+                    PostResponse postResponse = postMapper.toPostResponse(post);
+                    postResponse.setUsername(username);
+                    return postResponse;
+                })
                 .toList();
 
         return PageResponse.<PostResponse>builder()

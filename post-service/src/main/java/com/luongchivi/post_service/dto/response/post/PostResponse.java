@@ -1,4 +1,4 @@
-package com.luongchivi.post_service.dto.response;
+package com.luongchivi.post_service.dto.response.post;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,7 @@ public class PostResponse {
     String title;
     String content;
     String userId;
+    String username;
     Instant createdAt;
     Instant updatedAt;
 }

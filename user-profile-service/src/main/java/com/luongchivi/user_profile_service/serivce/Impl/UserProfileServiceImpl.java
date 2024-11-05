@@ -3,6 +3,8 @@ package com.luongchivi.user_profile_service.serivce.Impl;
 import com.luongchivi.user_profile_service.dto.request.userProfile.CreationUserProfileRequest;
 import com.luongchivi.user_profile_service.dto.response.userProfileResponse.UserProfileResponse;
 import com.luongchivi.user_profile_service.entity.UserProfile;
+import com.luongchivi.user_profile_service.exception.AppException;
+import com.luongchivi.user_profile_service.exception.ErrorCode;
 import com.luongchivi.user_profile_service.mapper.UserProfileMapper;
 import com.luongchivi.user_profile_service.repository.UserProfileRepository;
 import com.luongchivi.user_profile_service.serivce.UserProfileService;
@@ -34,8 +36,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userProfileMapper.toUserProfileResponse(saveUserProfile);
     }
 
+    public UserProfileResponse getUserProfileByUserId(String userId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
+        UserProfileResponse userProfileResponse = userProfileMapper.toUserProfileResponse(userProfile);
+        return userProfileResponse;
+    }
+
     public UserProfileResponse getUserProfile(String userProfileId) {
-        UserProfile userProfile = userProfileRepository.findById(userProfileId).orElseThrow(() -> new RuntimeException("UserProfile not found"));
+        UserProfile userProfile = userProfileRepository.findById(userProfileId).orElseThrow(() -> new AppException(ErrorCode.USER_PROFILE_NOT_FOUND));
         UserProfileResponse userProfileResponse = userProfileMapper.toUserProfileResponse(userProfile);
         return userProfileResponse;
     }

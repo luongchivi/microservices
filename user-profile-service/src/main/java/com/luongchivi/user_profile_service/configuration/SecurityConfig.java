@@ -19,8 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfig {
-    final String[] PUBLIC_POST_ENDPOINTS = {
+    final String[] PUBLIC_ENDPOINTS = {
             "/internal/users",
+            "/internal/users/**",
     };
 
     CustomJwtDecoder customJwtDecoder;
@@ -28,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
+                .requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
                 .anyRequest()
                 .authenticated());

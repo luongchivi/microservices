@@ -1,7 +1,7 @@
 package com.luongchivi.post_service.controller;
 
 import com.luongchivi.post_service.dto.request.PostCreationRequest;
-import com.luongchivi.post_service.dto.response.PostResponse;
+import com.luongchivi.post_service.dto.response.post.PostResponse;
 import com.luongchivi.post_service.service.PostService;
 import com.luongchivi.post_service.share.response.ApiResponse;
 import com.luongchivi.post_service.share.response.PageResponse;

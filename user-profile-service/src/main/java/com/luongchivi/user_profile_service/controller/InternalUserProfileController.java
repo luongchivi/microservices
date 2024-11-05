@@ -21,4 +21,10 @@ public class InternalUserProfileController {
         UserProfileResponse userProfileResponse = userProfileService.createUserProfile(request);
         return ApiResponse.<UserProfileResponse>builder().results(userProfileResponse).build();
     }
+
+    @GetMapping("/{userId}")
+    ApiResponse<UserProfileResponse> getUserProfile(@PathVariable String userId) {
+        UserProfileResponse userProfileResponse = userProfileService.getUserProfileByUserId(userId);
+        return ApiResponse.<UserProfileResponse>builder().results(userProfileResponse).build();
+    }
 }

@@ -12,7 +12,8 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(1008, "You do not have permission to access this resource", HttpStatus.FORBIDDEN),
     PAGE_INVALID(1014, "page must be greater than one", HttpStatus.BAD_REQUEST),
     PAGE_SIZE_INVALID(1015, "pageSize must be greater than one", HttpStatus.BAD_REQUEST),
-    BAD_REQUEST(1016, "Bad request", HttpStatus.BAD_REQUEST),
+    USER_PROFILE_NOT_FOUND(1016, "UserProfile not found", HttpStatus.NOT_FOUND),
+    BAD_REQUEST(1017, "Bad request", HttpStatus.BAD_REQUEST),
     ;
 
     private int code;
